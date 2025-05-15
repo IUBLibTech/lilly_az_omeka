@@ -1,0 +1,73 @@
+
+</div><!-- end content -->
+<footer role="contentinfo" >
+ <div class="section bg-mahogany bg-dark belt" role="complementary">
+   <div class="row pad">
+        <div class="grid thirds">
+			<div class="grid-item" id="footerText">
+                  
+	  	  <ul style="margin:auto; list-style-type: none; text-align: center;">
+            <li><a href="http://www.indiana.edu/~liblilly/" style="color: white!important;">The Lilly Library</a></li>
+	        <li> <a href="https://libraries.indiana.edu" class="footerlib-icon"> </br>
+			<img src="/lillyaz/themes/thedaily/img/library_cream_logo.png" title="" width=200px height=></a></li>
+	   </ul>
+	   
+	   </div>
+	   
+	    <div class="grid-item">
+	    
+	  <img alt="Indiana University Bicentennial 1820-2020" class="lockup" src="https://200.iu.edu/images/lockup.svg">
+	   
+	   </div>
+	   
+	   <div class="grid-item" id="footerText">
+		 <ul style="margin:auto; list-style-type: none; text-align: center;">   
+	    
+	    <li><a href="http://www.iupress.indiana.edu" style="color: white!important;">Indiana University Press</a></li> </br>
+	    <li>  <a href="https://pti.iu.edu/" >
+			<img style="width:100%;" src="/lillyaz/themes/thedaily/img/RT_UITS_horizontal_red-white_137H.png" title="" width=200px height=></a></li>
+
+        </ul>
+	
+	
+	  </div>
+	   </div>
+	   </div>
+	   </div>
+  	     </nav>
+  	 </div>
+        <div id="footer-text">
+                                    <p></p>
+        </div>
+	</div>
+     
+
+<footer role="contentinfo">
+
+    <div id="footer-content" class="center-div">
+        <?php if($footerText = get_theme_option('Footer Text')): ?>
+        <div id="custom-footer-text">
+            <p><?php echo get_theme_option('Footer Text'); ?></p>
+        </div>
+        <?php endif; ?>
+        <?php if ((get_theme_option('Display Footer Copyright') == 1) && $copyright = option('copyright')): ?>
+        
+        <?php endif; ?>
+        
+       
+
+    </div><!-- end footer-content -->
+
+     <?php fire_plugin_hook('public_footer', array('view'=>$this)); ?>
+
+</footer>
+
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        Omeka.skipNav();
+    });
+</script>
+
+</body>
+
+</html>
