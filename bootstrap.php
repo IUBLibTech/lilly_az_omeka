@@ -8,7 +8,7 @@
  */
 
 // Define the current version of Omeka.
-define('OMEKA_VERSION', '3.0');
+define('OMEKA_VERSION', '3.1.2');
 
 // Define the application environment.
 if (!defined('APPLICATION_ENV')) {
@@ -60,9 +60,7 @@ if ((isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS']
 if (!isset($_SERVER['HTTP_HOST'])) {
     $_SERVER['HTTP_HOST'] = null;
 }
-//$_SERVER['HTTP_HOST'] = 'lillyaz.indiana.edu';
-//$_SERVER['HTTP_HOST'] = 'collections.libraries.indiana.edu';
-$absoluteBase = $scheme . '://' . preg_replace('/[^a-z0-9-:._]/i', '', $_SERVER['HTTP_HOST']);
+$absoluteBase = $scheme . '://' . preg_replace('/[^a-z0-9-:._]/i', '', (string) $_SERVER['HTTP_HOST']);
 
 // Set the path.
 $dir = trim(dirname($_SERVER['SCRIPT_NAME']), '\,/');
@@ -125,14 +123,6 @@ if (PHP_SAPI !== 'cli' && extension_loaded('zlib')) {
     ini_set('zlib.output_compression_level', '5');
 }
 
-// Strip slashes from superglobals to avoid problems with PHP's magic_quotes.
-//if (get_magic_quotes_gpc()) {
-//    $_GET = stripslashes_deep($_GET);
-//   $_POST = stripslashes_deep($_POST);
-//    $_COOKIE = stripslashes_deep($_COOKIE);
-//    $_REQUEST = stripslashes_deep($_REQUEST);
-//}
-
 // Add the libraries and models directories to the include path.
 set_include_path(LIB_DIR. PATH_SEPARATOR . MODEL_DIR . PATH_SEPARATOR . get_include_path());
 
@@ -150,15 +140,3 @@ $autoloader->register();
 
 // Define the theme directory path.
 define('THEME_DIR', defined('ADMIN') ? ADMIN_THEME_DIR : PUBLIC_THEME_DIR);
-
-/**
- * Strip slashes recursively.
- *
- * @param array|string $value
- * @return array
- *
-*function stripslashes_deep($value)
-*{
-*    return is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
-*}
-*/

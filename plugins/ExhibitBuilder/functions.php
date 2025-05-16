@@ -110,6 +110,7 @@ function exhibit_builder_uninstall()
 
     // delete plugin options
     delete_option('exhibit_builder_sort_browse');
+    delete_option('exhibit_builder_researcher_permissions');
 }
 
 /**
@@ -325,6 +326,7 @@ function exhibit_builder_config_form()
 function exhibit_builder_config()
 {
     set_option('exhibit_builder_sort_browse', $_POST['exhibit_builder_sort_browse']);
+    set_option('exhibit_builder_researcher_permissions', $_POST['exhibit_builder_researcher_permissions']);
 }
 
 /**
@@ -362,6 +364,10 @@ function exhibit_builder_define_acl($args)
 
     $acl->allow(null, 'ExhibitBuilder_Exhibits', array('edit', 'delete'),
         new Omeka_Acl_Assert_Ownership);
+
+    if (get_option('exhibit_builder_researcher_permissions')==1) {
+        $acl->allow('researcher', 'ExhibitBuilder_Exhibits', 'showNotPublic');   
+    }
 }
 
 /**
@@ -386,6 +392,10 @@ function exhibit_builder_public_head($args)
 
     if ($module == 'exhibit-builder') {
         queue_css_file('exhibits');
+        queue_css_file('jcarousel.responsive');
+        queue_js_file('jcarousel.responsive');
+        queue_js_file('jquery.jcarousel.min');
+        queue_js_file('jquery.jcarousel-fade.min');
         $exhibitPage = get_current_record('exhibit_page', false);
         if ($exhibitPage) {
             $blocks = $exhibitPage->ExhibitPageBlocks;
@@ -435,7 +445,11 @@ function exhibit_builder_admin_head()
 function exhibit_builder_dashboard_stats($stats)
 {
     if (is_allowed('ExhibitBuilder_Exhibits', 'browse')) {
-        $stats[] = array(link_to('exhibits', array(), total_records('Exhibits')), __('exhibits'));
+        if (version_compare(OMEKA_VERSION, '3.1', 'ge')) {
+            $stats['exhibits'] = array(total_records('Exhibits'), __('exhibits'));
+        } else {
+            $stats[] = array(link_to('exhibits', array(), total_records('Exhibits')), __('exhibits'));
+        }
     }
     return $stats;
 }

@@ -24,17 +24,19 @@ Omeka.ExhibitBuilder = {};
     }
     Omeka.ExhibitBuilder.setSearchVisibility = function(show) {
         var searchForm = $('#page-search-form');
-        var searchButton = $('#show-or-hide-search');
 
         if (typeof show === 'undefined') {
             show = !searchForm.is(':visible');
         }
+
+        $('.search-toggle.active').removeClass('active');
+
         if (show) {
             searchForm.show();
-            searchButton.addClass('hide-form').removeClass('show-form');
+            $('.hide-form').addClass('active');
         } else {
             searchForm.hide();
-            searchButton.addClass('show-form').removeClass('hide-form');
+            $('.show-form').addClass('active');
         }
     }
 
@@ -147,22 +149,28 @@ Omeka.ExhibitBuilder = {};
         $('#block-container').on('exhibit-builder-add-block', '.block-form', function () {
             sortAttachments(this);
         });
-        
+
+        $('#block-container').on('click', '.drawer-toggle', function() {
+            $(this).toggleClass('opened');
+        });
+
         $('#block-container .collapse').click(function() {
-            $('.drawer-toggle.opened').removeClass('opened');
-            $('.drawer-toggle').addClass('closed');
-            $('.block-body').hide();
+            $('.sortable-item .drawer-toggle').removeClass('opened');
+            $('.block-body').removeClass('opened');
         });
 
         $('#block-container .expand').click(function() {
-            $('.drawer-toggle.closed').removeClass('closed');
-            $('.drawer-toggle').addClass('opened');
-            $('.block-body').show();
+            $('.sortable-item .drawer-toggle').addClass('opened');
+            $('.block-body').addClass('opened');
         });
 
-        $('#block-container').on('click', '.drawer-toggle', function (event) {
+        $('#block-container').on('click', '.block-header .drawer-toggle', function (event) {
             event.preventDefault();
-            $(this).toggleClass('closed').toggleClass('opened');
+            $(this).parent().siblings('.block-body').toggleClass('opened');
+        });
+
+        $('#block-container').on('click', '.layout-options .drawer-toggle', function (event) {
+            event.preventDefault();
             $(this).parent().siblings('div').toggleClass('opened');
         });
 
@@ -227,7 +235,7 @@ Omeka.ExhibitBuilder = {};
         });
 
         Omeka.ExhibitBuilder.setSearchVisibility(false);
-        $('#show-or-hide-search').click(function (event) {
+        $('.search-toggle').click(function (event) {
             event.preventDefault();
             Omeka.ExhibitBuilder.setSearchVisibility();
         });
@@ -547,7 +555,7 @@ Omeka.ExhibitBuilder = {};
         });
 
         Omeka.ExhibitBuilder.setSearchVisibility(false);
-        $('#show-or-hide-search').click(function (event) {
+        $('.search-toggle').click(function (event) {
             event.preventDefault();
             Omeka.ExhibitBuilder.setSearchVisibility();
         });

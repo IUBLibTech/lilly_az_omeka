@@ -29,7 +29,7 @@
 
     <!-- Stylesheets -->
     <?php
-    queue_css_file(array('iconfonts','style'));
+    queue_css_file(array('iconfonts','public','style'));
     queue_css_url('//fonts.googleapis.com/css?family=PT+Serif:400,700,400italic,700italic');
     echo head_css();
 
@@ -81,15 +81,15 @@
             border-color: <?php echo $buttonColor; ?>
         }
 
-        <?php if ($useOriginalThumbnailSize == "1"): ?>
-        .item-img,
-        .image,
-        #content .item img,
-        .item #content img,
-        .image img {
-            height: auto;
+        #collection-items .item img,
+        .browse .item-img,
+        .browse .image,
+        .browse #content .item img,
+        .browse .item #content img,
+        .browse .image img,
+        #recent-items img.image {
+            height: <?php echo ($useOriginalThumbnailSize == "1") ? 'auto' : '100px' ?>;
         }
-        <?php endif; ?>
 
         @media (max-width:768px) {
             #primary-nav li {
@@ -121,7 +121,11 @@
     ?>
 </head>
 <?php echo body_tag(array('id' => @$bodyid, 'class' => @$bodyclass)); ?>
-    <a href="#content" id="skipnav"><?php echo __('Skip to main content'); ?></a>
+    
+    <div id="skipnav">
+        <span class="spacer">&nbsp;</span>
+        <a href="#content"><?php echo __('Skip to main content'); ?></a>
+    </div>
     <?php fire_plugin_hook('public_body', array('view'=>$this)); ?>
 
         <header role="banner">
@@ -130,7 +134,7 @@
         </header>
 
         <div id="wrap">
-            <div class="menu-button button">Menu</div>
+            <button type="button" class="menu-button button">Menu</button>
             <nav id="primary-nav" role="navigation">
                 <?php echo public_nav_main(array('role' => 'navigation')); ?>
                 <div id="search-container" role="search">
