@@ -8,6 +8,8 @@
  */
 class CsvImport_IndexController extends Omeka_Controller_AbstractActionController
 {
+    public $session;
+
     protected $_browseRecordsPerPage = 10;
     protected $_pluginConfig = array();
 
@@ -374,7 +376,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         $csvConfig = $this->_getPluginConfig();
 
         $jobDispatcher = Zend_Registry::get('job_dispatcher');
-        $jobDispatcher->setQueueName(CsvImport_ImportTask::QUEUE_NAME);
+        $jobDispatcher->setQueueNameLongRunning(CsvImport_ImportTask::QUEUE_NAME);
         try {
             $jobDispatcher->sendLongRunning('CsvImport_ImportTask',
                 array(

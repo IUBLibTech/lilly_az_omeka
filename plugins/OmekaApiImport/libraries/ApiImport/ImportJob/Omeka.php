@@ -7,6 +7,7 @@ class ApiImport_ImportJob_Omeka extends Omeka_Job_AbstractJob
     protected $endpointUri;
     protected $key;
     protected $importId;
+    protected $importUsers;
     protected $import;
 
     public function perform()
@@ -50,7 +51,16 @@ class ApiImport_ImportJob_Omeka extends Omeka_Job_AbstractJob
     {
         $this->importId = $importId;
         $import = get_db()->getTable('OmekaApiImport')->find($importId);
+
+        if (!$import) {
+            throw new RuntimeException('Unable to find import record');
+        }
         $this->import = $import;
+    }
+    
+    public function setImportUsers($importUsers)
+    {
+        $this->importUsers = $importUsers;
     }
 
     /**
@@ -66,13 +76,14 @@ class ApiImport_ImportJob_Omeka extends Omeka_Job_AbstractJob
         $this->import->save();
         if(is_string($adapter)) {
             try {
-                $adapter = new $adapter(null, $this->endpointUri);
+                $adapter = new $adapter(null, $this->endpointUri, null);
             } catch(Exception $e) {
                 $this->import->status = 'error';
                 $this->import->save();
                 _log($e);
             }
         }
+        $adapter->setImportUsers($this->importUsers);
         $adapter->setService($this->omeka);
         $page = 1;
 

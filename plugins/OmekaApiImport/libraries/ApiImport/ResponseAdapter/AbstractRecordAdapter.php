@@ -12,6 +12,7 @@ abstract class ApiImport_ResponseAdapter_AbstractRecordAdapter implements ApiImp
     protected $record;
     protected $recordType;
     protected $endpointUri;
+    protected $importUsers = true;
 
     /**
      * Injection of a class service doing the remote data-gathering. One of these typically passes in the $responseData
@@ -33,7 +34,7 @@ abstract class ApiImport_ResponseAdapter_AbstractRecordAdapter implements ApiImp
 
     public function resetResponseData($responseData)
     {
-        $this->construct($responseData, $this->endpointUri);
+        $this->construct($responseData, $this->endpointUri, null);
     }
 
     public function setService($service)
@@ -44,6 +45,11 @@ abstract class ApiImport_ResponseAdapter_AbstractRecordAdapter implements ApiImp
     public function getService()
     {
         return $this->service;
+    }
+
+    public function setImportUsers($importUsers)
+    {
+        $this->importUsers = (bool) $importUsers;
     }
 
     /**

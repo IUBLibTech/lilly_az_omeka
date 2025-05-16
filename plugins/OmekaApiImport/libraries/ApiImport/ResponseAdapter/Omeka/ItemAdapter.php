@@ -41,6 +41,11 @@ class ApiImport_ResponseAdapter_Omeka_ItemAdapter extends ApiImport_ResponseAdap
      */
     protected function updateItemOwner($item)
     {
+        if ($this->importUsers == 0) {
+            $item->owner_id = current_user()->id;
+            $item->save();
+            return;
+        }
         $ownerId = $this->responseData['owner']['id'];
         if (! $ownerId) {
             $item->owner_id = null;
@@ -54,7 +59,8 @@ class ApiImport_ResponseAdapter_Omeka_ItemAdapter extends ApiImport_ResponseAdap
             $response = $this->service->users->get($ownerId);
             if($response->getStatus() == 200) {
                 $responseData = json_decode($response->getBody(), true);
-                $adapter = new ApiImport_ResponseAdapter_Omeka_UserAdapter($responseData, $this->endpointUri);
+                $adapter = new ApiImport_ResponseAdapter_Omeka_UserAdapter($responseData, $this->endpointUri, null);
+                $adapter->setImportUsers($this->importUsers);
                 $adapter->import();
                 $item->owner_id = $adapter->record->id;
             } else {
@@ -125,11 +131,14 @@ class ApiImport_ResponseAdapter_Omeka_ItemAdapter extends ApiImport_ResponseAdap
         $metadata['public'] = $this->responseData['public'];
         $metadata['featured'] = $this->responseData['featured'];
         //external vs internal collection ids could be different
-        $collectionExternalId = $this->responseData['collection']['id'];
-        $collectionId = null;
-        if(is_null($collectionExternalId)) {
-            $metadata['collection_id'] = null;
+        if (isset($this->responseData['collection']['id'])) {
+            $collectionExternalId = $this->responseData['collection']['id'];
         } else {
+            $collectionExternalId = null;
+        }
+
+        $collectionId = null;
+        if (!is_null($collectionExternalId)) {
             $collection = $this->localRecord('Collection', $collectionExternalId);
             if($collection) {
                 $collectionId = $collection->id;
@@ -141,8 +150,9 @@ class ApiImport_ResponseAdapter_Omeka_ItemAdapter extends ApiImport_ResponseAdap
                     $collectionId = $collection->id;
                 }
             }
-            $metadata['collection_id'] = $collectionId;
         }
+        $metadata['collection_id'] = $collectionId;
+
         $itemType = $this->responseData['item_type'] ? $this->localRecord('ItemType', $this->responseData['item_type']['id']) : null;
         if($itemType) {
             $itemTypeId = $itemType->id;
@@ -166,6 +176,8 @@ class ApiImport_ResponseAdapter_Omeka_ItemAdapter extends ApiImport_ResponseAdap
             $item,
             array()
         );
+        $this->_addIngestValidators($ingester);
+
         $files = $this->files();
 
         //have to step through one by one so we can save the id map for each $fileRecord and $fileData
@@ -211,6 +223,7 @@ class ApiImport_ResponseAdapter_Omeka_ItemAdapter extends ApiImport_ResponseAdap
         foreach($responseData as $fileData) {
             if(! in_array($fileData['id'], $ids)) {
                 $files[] = array('source'   => $fileData['file_urls']['original'],
+                                 'name' => $fileData['original_filename'],
                                  'metadata' => $this->elementTexts($fileData),
                                  //add the external id so we can produce the map
                                  'externalId' => $fileData['id']
@@ -231,5 +244,21 @@ class ApiImport_ResponseAdapter_Omeka_ItemAdapter extends ApiImport_ResponseAdap
             return $adapter->getRecord();
         }
         return false;
+    }
+
+    protected function _addIngestValidators(Omeka_File_Ingest_AbstractIngest $ingester)
+    {
+        $validators = get_option(File::DISABLE_DEFAULT_VALIDATION_OPTION)
+                    ? array()
+                    : array(
+                        'extension whitelist' => new Omeka_Validate_File_Extension,
+                        'MIME type whitelist' => new Omeka_Validate_File_MimeType);
+
+        $validators = apply_filters('file_ingest_validators', $validators);
+
+        // Build the default validators.
+        foreach ($validators as $validator) {
+            $ingester->addValidator($validator);
+        }
     }
 }
