@@ -60,8 +60,8 @@ if ((isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS']
 if (!isset($_SERVER['HTTP_HOST'])) {
     $_SERVER['HTTP_HOST'] = null;
 }
-$_SERVER['HTTP_HOST'] = 'lillyaz.indiana.edu';
-$_SERVER['HTTP_HOST'] = 'lillyaz.indiana.edu';
+//$_SERVER['HTTP_HOST'] = 'lillyaz.indiana.edu';
+//$_SERVER['HTTP_HOST'] = 'collections.libraries.indiana.edu';
 $absoluteBase = $scheme . '://' . preg_replace('/[^a-z0-9-:._]/i', '', $_SERVER['HTTP_HOST']);
 
 // Set the path.
@@ -126,12 +126,12 @@ if (PHP_SAPI !== 'cli' && extension_loaded('zlib')) {
 }
 
 // Strip slashes from superglobals to avoid problems with PHP's magic_quotes.
-if (get_magic_quotes_gpc()) {
-    $_GET = stripslashes_deep($_GET);
-    $_POST = stripslashes_deep($_POST);
-    $_COOKIE = stripslashes_deep($_COOKIE);
-    $_REQUEST = stripslashes_deep($_REQUEST);
-}
+//if (get_magic_quotes_gpc()) {
+//    $_GET = stripslashes_deep($_GET);
+//   $_POST = stripslashes_deep($_POST);
+//    $_COOKIE = stripslashes_deep($_COOKIE);
+//    $_REQUEST = stripslashes_deep($_REQUEST);
+//}
 
 // Add the libraries and models directories to the include path.
 set_include_path(LIB_DIR. PATH_SEPARATOR . MODEL_DIR . PATH_SEPARATOR . get_include_path());
@@ -156,8 +156,9 @@ define('THEME_DIR', defined('ADMIN') ? ADMIN_THEME_DIR : PUBLIC_THEME_DIR);
  *
  * @param array|string $value
  * @return array
- */
-function stripslashes_deep($value)
-{
-    return is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
-}
+ *
+*function stripslashes_deep($value)
+*{
+*    return is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
+*}
+*/
