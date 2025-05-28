@@ -16,7 +16,7 @@
 	   
 	    <div class="grid-item">
 	    
-	  <img alt="Indiana University Bicentennial 1820-2020" class="lockup" src="https://200.iu.edu/images/lockup.svg">
+	  
 	   
 	   </div>
 	   

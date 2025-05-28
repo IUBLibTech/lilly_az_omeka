@@ -26,7 +26,7 @@
 		<div class="grid-item" style="height: 45px;"></div>          
 	   
 	    <div class="grid-item" style="">   
-	  	 <img alt="Indiana University Bicentennial 1820-2020" class="lockup" style="max-height: 90px; min-height: 45px;" src="https://200.iu.edu/images/lockup.svg">
+	  
 	   
 	   	</div>
 	   <div class="grid-item" style="height: 45px;"></div>
